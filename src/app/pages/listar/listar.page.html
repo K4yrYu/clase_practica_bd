@@ -1,0 +1,30 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>listar</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list>
+    <!--al no saber cuantos registros hay se usa 1 etiqueta, y logica prog-->
+    <!--se alade ngFor para repetir el sliding para cada elemento-->
+    <ion-item-sliding *ngFor="let x of arregloNoticias">
+      <!--para interpolar se usan los datos del ts y la var en ngFor-->
+      <ion-item>
+        <h3>{{ x.titulo }}</h3>
+        <ion-label>{{x.texto}}</ion-label>
+      </ion-item>
+  
+      <ion-item-options side="end">
+        <!--añadidoo evento click-->
+        <!--se le pasa como parametro a las funciones la noticia (en este caso con x)-->
+        <ion-item-option (click)="modificar(x)">
+          <ion-icon slot="icon-only" name="pencil"></ion-icon>
+        </ion-item-option (click)="eliminar(x)">
+        <ion-item-option color="danger">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>

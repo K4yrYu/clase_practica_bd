@@ -7,14 +7,28 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
   },
   {
+    //pagina a mostrar al inicio
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'listar',
     pathMatch: 'full'
   },
   {
     path: 'nueva',
     loadChildren: () => import('./pages/nueva/nueva.module').then( m => m.NuevaPageModule)
   },
+  {
+    path: 'listar',
+    loadChildren: () => import('./pages/listar/listar.module').then( m => m.ListarPageModule)
+  },
+  {
+    path: 'agregar',
+    loadChildren: () => import('./pages/agregar/agregar.module').then( m => m.AgregarPageModule)
+  },
+  {
+    path: 'modificar',
+    loadChildren: () => import('./pages/modificar/modificar.module').then( m => m.ModificarPageModule)
+  },
+
 ];
 
 @NgModule({

@@ -12,7 +12,7 @@ export class ServicebdService {
   public database!: SQLiteObject;
 
   //variables de creación de tablas
-  tablaNoticia: string = "CREATE TABLE IF NOT EXISTS noticia(idnoticia INTEGER PRIMARY KEY autoincrement, titulo VARCHAR(100) NOT NULL, texto TEXT NOT NULL);";
+  tablaNoticia: string = "CREATE TABLE IF NOT EXISTS tablaNoticia(idnoticia INTEGER PRIMARY KEY autoincrement, titulo VARCHAR(100) NOT NULL, texto TEXT NOT NULL);";
   
   //variables de insert por defecto en la bd
 
@@ -73,7 +73,7 @@ export class ServicebdService {
         this.database = db;
         //llamar a la funcion de creacion de tablas
         this.creartablas();
-
+        this.consultarNoticias();
         //modificar el observable (todos los observables se les cambia el valor con .next() y en el () se inserta el nuevo valor)
         this.idDBReady.next(true);
       }).catch(e=>{
@@ -96,6 +96,53 @@ export class ServicebdService {
       this.presentAlert("Creacion de tabla", "Error creando la tablas" + JSON.stringify(e));
     }
   }
+
+
+  //en caso de necesitar un parametro para un seleect se debe declarar en la misma funcion
+  consultarNoticias(){
+    //sirve para cualquier consulta
+    //tiene 2 parametros (consulasql a ejecutar) (los parametros necesarios {pueden quedar vacíos})
+    //TODO EL CODIGO SQL SE PUEDE UTIIZAR ALLÍ
+    //el resultado de la consulta sql se guarda en la var de la funcion de flecha (en este caso en res)
+    return this.database.executeSql('SELECT * FROM tablaNoticia',[]).then(res=>{
+      //variable para almacenar el resultado de la consulta
+      let items: Noticias[] = [];
+      //verificar si tenemos registros en la consulta
+      if(res.rows.lenght > 0){
+        //recorro el resultado 
+        for(var i = 0; i < res.rows.lenght; i++){
+          //agregar el registro a mi varibale
+          //usar los mismos nombres en la clase que en la tabla
+          //variable : valor
+          // clase    /    tabla
+          items.push({
+            idnoticia: res.rows.item(i).idnoticia,
+            titulo: res.rows.item(i).titulo,
+            texto: res.rows.item(i).texto
+          })
+        }
+      }
+      this.listadoNoticias.next(items as any);
+    })
+  }
+
+  modificarNoticia(id: string, titulo: string, texto: string){
+    //cada vez que se vaya a utilizar una var se reemplaza por ?
+    //sin embargo SE DEBE RESPETAR EL ORDEN (SE PONE EN LOS CORCHETES)
+    return this.database.executeSql('UPDATE tablaNoticia SET titulo = ?, texto = ? WHERE idnoticia = ?',[titulo, texto, id]).then(res=>{
+      this.presentAlert("modificar", "noticia modificada");
+      this.consultarNoticias();
+    }).catch(e=>{
+      this.presentAlert("Creacion de tabla", "Error creando la tablas" + JSON.stringify(e));
+    })
+  }
+
+  eliminarNoticia(id: string){
+    return this.database.executeSql('DELETE FROM tablaNoticia  WHERE idnoticia = ?',[id]).then(res=>{
+      
+    })
+  }
+
 }
 
 
